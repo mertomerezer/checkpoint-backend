@@ -10,6 +10,10 @@ import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.IGameService;
 import java.time.LocalDateTime;
+import java.util.List;
+
+import jakarta.transaction.Transactional;
+import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
 
@@ -21,10 +25,7 @@ public class GameServiceImpl implements IGameService {
     public GameServiceImpl(GameRepository gameRepository,LogEntryRepository logEntryRepository){
         this.gameRepository=gameRepository;
         this.logEntryRepository=logEntryRepository;
-
     }
-
-
     @Override
     public GameResponse saveGame(CreateGameRequest createGameRequest){
         Game game = new Game();
@@ -33,7 +34,6 @@ public class GameServiceImpl implements IGameService {
         Game saveGame = gameRepository.save(game);
         BeanUtils.copyProperties(saveGame,responseGame);
         return responseGame;
-
     }
 
     @Override
@@ -47,7 +47,14 @@ public class GameServiceImpl implements IGameService {
         LogEntry savedLog = logEntryRepository.save(newLog);
         BeanUtils.copyProperties(savedLog,saveEntry);
         return saveEntry;
+    }
+    @Override
+    @Transactional
+    public void deleteGame(Long gameId){
+        Game game = gameRepository.findById(gameId).orElseThrow();
+        List<LogEntry> deleteEntry = logEntryRepository.findAllByGame_Id(gameId);
+        logEntryRepository.deleteAll(deleteEntry);
+        gameRepository.delete(game);
 
     }
-
 }

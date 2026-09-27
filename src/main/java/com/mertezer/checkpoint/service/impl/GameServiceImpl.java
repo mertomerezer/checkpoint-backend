@@ -10,6 +10,7 @@ import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.IGameService;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
@@ -55,6 +56,21 @@ public class GameServiceImpl implements IGameService {
         List<LogEntry> deleteEntry = logEntryRepository.findAllByGame_Id(gameId);
         logEntryRepository.deleteAll(deleteEntry);
         gameRepository.delete(game);
+    }
+    @Override
+    public List<GameResponse> getAllGames(){
+        List<Game> allGames = gameRepository.findAll();
+        List<GameResponse> allResponseGames = new ArrayList<>();
+
+        for(int i = 0;i<allGames.size();i++){
+            GameResponse responseGame = new GameResponse();
+            Game saveGame = new Game();
+            saveGame = allGames.get(i);
+            BeanUtils.copyProperties(saveGame,responseGame);
+            allResponseGames.add(responseGame);
+        }
+        return allResponseGames;
+
 
     }
 }

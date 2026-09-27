@@ -35,8 +35,8 @@ public class GameControllerImpl implements IGameController {
     public ResponseEntity<Void> deleteGame(@PathVariable Long gameId){
         gameService.deleteGame(gameId);
         return ResponseEntity.noContent().build();
-
     }
+
 
 
 

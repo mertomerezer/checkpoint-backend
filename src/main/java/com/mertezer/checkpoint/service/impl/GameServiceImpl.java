@@ -36,7 +36,6 @@ public class GameServiceImpl implements IGameService {
         BeanUtils.copyProperties(saveGame,responseGame);
         return responseGame;
     }
-
     @Override
     public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest,Long gameId){
         Game game = gameRepository.findById(gameId).orElseThrow(); //Verilen idye ait oyunu bulduk eğer oyun yoksa metot burada durur.varsa game nesnesinden değişken oluşur
@@ -61,7 +60,6 @@ public class GameServiceImpl implements IGameService {
     public List<GameResponse> getAllGames(){
         List<Game> allGames = gameRepository.findAll();
         List<GameResponse> allResponseGames = new ArrayList<>();
-
         for(int i = 0;i<allGames.size();i++){
             GameResponse responseGame = new GameResponse();
             Game saveGame = new Game();
@@ -70,7 +68,5 @@ public class GameServiceImpl implements IGameService {
             allResponseGames.add(responseGame);
         }
         return allResponseGames;
-
-
     }
 }

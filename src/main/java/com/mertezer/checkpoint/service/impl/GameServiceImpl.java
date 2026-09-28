@@ -1,15 +1,12 @@
 package com.mertezer.checkpoint.service.impl;
 
 import com.mertezer.checkpoint.dto.CreateGameRequest;
-import com.mertezer.checkpoint.dto.CreateLogNoteRequest;
 import com.mertezer.checkpoint.dto.GameResponse;
-import com.mertezer.checkpoint.dto.LogEntryResponse;
 import com.mertezer.checkpoint.entity.Game;
 import com.mertezer.checkpoint.entity.LogEntry;
 import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.IGameService;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,17 +33,6 @@ public class GameServiceImpl implements IGameService {
         return responseGame;
     }
     @Override
-    public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest,Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow(); //Verilen idye ait oyunu bulduk eğer oyun yoksa metot burada durur.varsa game nesnesinden değişken oluşur
-        LogEntry newLog = new LogEntry();
-        LogEntryResponse saveEntry = new LogEntryResponse();
-        BeanUtils.copyProperties(createLogNoteRequest,newLog);
-        newLog.setGame(game);
-        newLog.setCreatedAt(LocalDateTime.now());
-        LogEntry savedLog = logEntryRepository.save(newLog);
-        BeanUtils.copyProperties(savedLog,saveEntry);
-        return saveEntry;
-    }
     @Override
     @Transactional
     public void deleteGame(Long gameId){

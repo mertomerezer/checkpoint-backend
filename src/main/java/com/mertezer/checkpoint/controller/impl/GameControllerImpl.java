@@ -43,6 +43,12 @@ public class GameControllerImpl implements IGameController {
         return gameService.getAllGames();
     }
 
+    @Override
+    @GetMapping("gamebyid/{gameId}")
+    public GameResponse getGameById(@PathVariable Long gameId){
+        return gameService.getGameById(gameId);
+    }
+
 
 
 

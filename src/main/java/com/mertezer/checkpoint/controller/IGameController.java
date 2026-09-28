@@ -13,6 +13,7 @@ public interface IGameController {
     public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest, Long gameId);
     public ResponseEntity<Void> deleteGame(Long gameId);
     public List<GameResponse> getAllGames();
+    public GameResponse getGameById(Long gameId);
 
 
 }

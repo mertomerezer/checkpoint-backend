@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.transaction.Transactional;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.BeanUtils;
 
@@ -68,5 +67,13 @@ public class GameServiceImpl implements IGameService {
             allResponseGames.add(responseGame);
         }
         return allResponseGames;
+    }
+
+    @Override
+    public GameResponse getGameById(Long gameId){
+        Game game = gameRepository.findById(gameId).orElseThrow();
+        GameResponse responseGame = new GameResponse();
+        BeanUtils.copyProperties(game,responseGame);
+        return responseGame;
     }
 }

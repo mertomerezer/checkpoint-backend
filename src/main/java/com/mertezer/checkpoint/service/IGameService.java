@@ -13,6 +13,8 @@ public interface IGameService {
     public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest,Long gameId);
     public void deleteGame(Long gameId);
     public List<GameResponse> getAllGames();
+    public GameResponse getGameById(Long gameId);
+
 
 
 

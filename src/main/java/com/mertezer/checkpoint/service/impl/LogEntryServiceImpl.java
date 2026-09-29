@@ -11,6 +11,8 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class LogEntryServiceImpl implements ILogEntryService {
@@ -30,10 +32,21 @@ public class LogEntryServiceImpl implements ILogEntryService {
         BeanUtils.copyProperties(createLogNoteRequest, newLog);
         newLog.setGame(game);
         newLog.setCreatedAt(LocalDateTime.now());
-
         LogEntry savedLog = logEntryRepository.save(newLog);
         LogEntryResponse response = new LogEntryResponse();
         BeanUtils.copyProperties(savedLog, response);
         return response;
+    }
+    @Override
+    public List<LogEntryResponse> getNotesByGameId(Long gameId){
+        Game game = gameRepository.findById(gameId).orElseThrow();
+        List<LogEntry> getLog = logEntryRepository.findAllByGame_Id(gameId);
+        List<LogEntryResponse> responseLog = new ArrayList<>();
+        for(int i = 0;i<getLog.size();i++){
+            LogEntryResponse logResponse = new LogEntryResponse();
+            BeanUtils.copyProperties(getLog.get(i), logResponse);
+            responseLog.add(logResponse);
+        }
+        return responseLog;
     }
 }

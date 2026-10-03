@@ -37,16 +37,23 @@ public class LogEntryServiceImpl implements ILogEntryService {
         BeanUtils.copyProperties(savedLog, response);
         return response;
     }
+
     @Override
-    public List<LogEntryResponse> getNotesByGameId(Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow();
-        List<LogEntry> getLog = logEntryRepository.findAllByGame_Id(gameId);
-        List<LogEntryResponse> responseLog = new ArrayList<>();
-        for(int i = 0;i<getLog.size();i++){
-            LogEntryResponse logResponse = new LogEntryResponse();
-            BeanUtils.copyProperties(getLog.get(i), logResponse);
-            responseLog.add(logResponse);
+    public List<LogEntryResponse> getNotesByGameId(Long gameId) {
+        gameRepository.findById(gameId).orElseThrow();
+        List<LogEntry> notes = logEntryRepository.findAllByGame_Id(gameId);
+        List<LogEntryResponse> responses = new ArrayList<>();
+        for (LogEntry note : notes) {
+            LogEntryResponse response = new LogEntryResponse();
+            BeanUtils.copyProperties(note, response);
+            responses.add(response);
         }
-        return responseLog;
+        return responses;
+    }
+
+    @Override
+    public void deleteNote(Long logEntryId) {
+        LogEntry deleteLog = logEntryRepository.findById(logEntryId).orElseThrow();
+        logEntryRepository.delete(deleteLog);
     }
 }

@@ -56,4 +56,13 @@ public class LogEntryServiceImpl implements ILogEntryService {
         LogEntry deleteLog = logEntryRepository.findById(logEntryId).orElseThrow();
         logEntryRepository.delete(deleteLog);
     }
+    @Override
+   public LogEntryResponse updateNote(CreateLogNoteRequest createLogNoteRequest,Long logEntryId){
+        LogEntry oldNote = logEntryRepository.findById(logEntryId).orElseThrow();
+        BeanUtils.copyProperties(createLogNoteRequest,oldNote);
+        LogEntry updateNote =logEntryRepository.save(oldNote);
+        LogEntryResponse newResponseNote = new LogEntryResponse();
+        BeanUtils.copyProperties(updateNote,newResponseNote);
+        return newResponseNote;
+    }
 }

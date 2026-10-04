@@ -37,4 +37,10 @@ public class LogEntryControllerImpl implements ILogEntryController {
     public void deleteNote(@PathVariable Long logEntryId) {
         logEntryService.deleteNote(logEntryId);
     }
+
+    @Override
+    @PatchMapping("/update-note/{logEntryId}")
+    public LogEntryResponse updateNote(@RequestBody @Valid CreateLogNoteRequest createLogNoteRequest,@PathVariable Long logEntryId){
+      return logEntryService.updateNote(createLogNoteRequest,logEntryId);
+    }
 }

@@ -9,4 +9,5 @@ public interface ILogEntryController {
     LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest, Long gameId);
     List<LogEntryResponse> getNotesByGameId(Long gameId);
     void deleteNote(Long logEntryId);
+     LogEntryResponse updateNote(CreateLogNoteRequest createLogNoteRequest,Long logEntryId);
 }

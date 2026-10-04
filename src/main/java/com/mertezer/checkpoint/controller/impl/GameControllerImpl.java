@@ -4,6 +4,7 @@ import com.mertezer.checkpoint.controller.IGameController;
 import com.mertezer.checkpoint.dto.CreateGameRequest;
 import com.mertezer.checkpoint.dto.GameResponse;
 import com.mertezer.checkpoint.service.IGameService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +21,7 @@ public class GameControllerImpl implements IGameController {
 
     @Override
     @PostMapping("/save-game")
-    public GameResponse saveGame (@RequestBody CreateGameRequest createGameRequest){
+    public GameResponse saveGame (@RequestBody @Valid CreateGameRequest createGameRequest){
         return gameService.saveGame(createGameRequest);
     }
     @Override

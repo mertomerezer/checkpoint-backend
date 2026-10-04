@@ -16,6 +16,7 @@ public class LogEntry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(length = 2000)
     private String note;
 
     private LocalDateTime createdAt;

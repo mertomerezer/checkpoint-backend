@@ -4,6 +4,7 @@ import com.mertezer.checkpoint.dto.CreateGameRequest;
 import com.mertezer.checkpoint.dto.GameResponse;
 import com.mertezer.checkpoint.entity.Game;
 import com.mertezer.checkpoint.entity.LogEntry;
+import com.mertezer.checkpoint.exception.ResourceNotFoundException;
 import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.IGameService;
@@ -33,10 +34,9 @@ public class GameServiceImpl implements IGameService {
         return responseGame;
     }
     @Override
-    @Override
     @Transactional
     public void deleteGame(Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow();
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
         List<LogEntry> deleteEntry = logEntryRepository.findAllByGame_Id(gameId);
         logEntryRepository.deleteAll(deleteEntry);
         gameRepository.delete(game);
@@ -54,10 +54,9 @@ public class GameServiceImpl implements IGameService {
         }
         return allResponseGames;
     }
-
     @Override
     public GameResponse getGameById(Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow();
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
         GameResponse responseGame = new GameResponse();
         BeanUtils.copyProperties(game,responseGame);
         return responseGame;

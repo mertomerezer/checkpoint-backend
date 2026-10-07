@@ -4,6 +4,7 @@ import com.mertezer.checkpoint.dto.CreateLogNoteRequest;
 import com.mertezer.checkpoint.dto.LogEntryResponse;
 import com.mertezer.checkpoint.entity.Game;
 import com.mertezer.checkpoint.entity.LogEntry;
+import com.mertezer.checkpoint.exception.ResourceNotFoundException;
 import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.ILogEntryService;
@@ -27,7 +28,7 @@ public class LogEntryServiceImpl implements ILogEntryService {
 
     @Override
     public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest, Long gameId) {
-        Game game = gameRepository.findById(gameId).orElseThrow();
+        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
         LogEntry newLog = new LogEntry();
         BeanUtils.copyProperties(createLogNoteRequest, newLog);
         newLog.setGame(game);
@@ -40,7 +41,7 @@ public class LogEntryServiceImpl implements ILogEntryService {
 
     @Override
     public List<LogEntryResponse> getNotesByGameId(Long gameId) {
-        gameRepository.findById(gameId).orElseThrow();
+        gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
         List<LogEntry> notes = logEntryRepository.findAllByGame_Id(gameId);
         List<LogEntryResponse> responses = new ArrayList<>();
         for (LogEntry note : notes) {
@@ -53,12 +54,12 @@ public class LogEntryServiceImpl implements ILogEntryService {
 
     @Override
     public void deleteNote(Long logEntryId) {
-        LogEntry deleteLog = logEntryRepository.findById(logEntryId).orElseThrow();
+        LogEntry deleteLog = logEntryRepository.findById(logEntryId).orElseThrow(() -> new ResourceNotFoundException("Note not found with id: "+logEntryId));
         logEntryRepository.delete(deleteLog);
     }
     @Override
    public LogEntryResponse updateNote(CreateLogNoteRequest createLogNoteRequest,Long logEntryId){
-        LogEntry oldNote = logEntryRepository.findById(logEntryId).orElseThrow();
+        LogEntry oldNote = logEntryRepository.findById(logEntryId).orElseThrow(() -> new ResourceNotFoundException("Note not found with id: "+logEntryId));
         BeanUtils.copyProperties(createLogNoteRequest,oldNote);
         LogEntry updateNote =logEntryRepository.save(oldNote);
         LogEntryResponse newResponseNote = new LogEntryResponse();

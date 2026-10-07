@@ -20,26 +20,26 @@ public class LogEntryControllerImpl implements ILogEntryController {
     }
 
     @Override
-    @PostMapping("/save-not/{gameId}/logs")
+    @PostMapping("/games/{gameId}/notes")
     public LogEntryResponse saveNote(@RequestBody @Valid CreateLogNoteRequest createLogNoteRequest,
                                      @PathVariable Long gameId) {
         return logEntryService.saveNote(createLogNoteRequest, gameId);
     }
 
     @Override
-    @GetMapping("/note/{gameId}")
+    @GetMapping("/games/{gameId}/notes")
     public List<LogEntryResponse> getNotesByGameId(@PathVariable Long gameId) {
         return logEntryService.getNotesByGameId(gameId);
     }
 
     @Override
-    @DeleteMapping("/delete-note/{logEntryId}")
+    @DeleteMapping("/notes/{logEntryId}")
     public void deleteNote(@PathVariable Long logEntryId) {
         logEntryService.deleteNote(logEntryId);
     }
 
     @Override
-    @PatchMapping("/update-note/{logEntryId}")
+    @PatchMapping("/notes/{logEntryId}")
     public LogEntryResponse updateNote(@RequestBody @Valid CreateLogNoteRequest createLogNoteRequest,@PathVariable Long logEntryId){
       return logEntryService.updateNote(createLogNoteRequest,logEntryId);
     }

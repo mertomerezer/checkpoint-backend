@@ -22,6 +22,6 @@ public class LogEntry {
     private LocalDateTime createdAt;
 
     @ManyToOne
-    @JoinColumn(name = "game_id",nullable = false)
-    private Game game;
+    @JoinColumn(name = "user_game_id",nullable = false)
+    private UserGame userGame;
 }

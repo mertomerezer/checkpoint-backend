@@ -3,62 +3,58 @@ package com.mertezer.checkpoint.service.impl;
 import com.mertezer.checkpoint.dto.CreateGameRequest;
 import com.mertezer.checkpoint.dto.GameResponse;
 import com.mertezer.checkpoint.entity.Game;
-import com.mertezer.checkpoint.entity.LogEntry;
 import com.mertezer.checkpoint.exception.ResourceNotFoundException;
 import com.mertezer.checkpoint.repository.GameRepository;
-import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.IGameService;
+import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import jakarta.transaction.Transactional;
-import org.springframework.stereotype.Service;
-import org.springframework.beans.BeanUtils;
-
 @Service
 public class GameServiceImpl implements IGameService {
-
     private final GameRepository gameRepository;
-    private final LogEntryRepository logEntryRepository;
-    public GameServiceImpl(GameRepository gameRepository,LogEntryRepository logEntryRepository){
-        this.gameRepository=gameRepository;
-        this.logEntryRepository=logEntryRepository;
+
+    public GameServiceImpl(GameRepository gameRepository) {
+        this.gameRepository = gameRepository;
     }
+
     @Override
-    public GameResponse saveGame(CreateGameRequest createGameRequest){
+    public GameResponse saveGame(CreateGameRequest request) {
         Game game = new Game();
-        GameResponse responseGame = new GameResponse();
-        BeanUtils.copyProperties(createGameRequest,game);
-        Game saveGame = gameRepository.save(game);
-        BeanUtils.copyProperties(saveGame,responseGame);
-        return responseGame;
+        GameResponse response = new GameResponse();
+        BeanUtils.copyProperties(request, game);
+        Game savedGame = gameRepository.save(game);
+        BeanUtils.copyProperties(savedGame, response);
+        return response;
     }
+
     @Override
-    @Transactional
-    public void deleteGame(Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
-        List<LogEntry> deleteEntry = logEntryRepository.findAllByGame_Id(gameId);
-        logEntryRepository.deleteAll(deleteEntry);
-        gameRepository.delete(game);
+    public void deleteGame(Long gameId) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,
+                "Game deletion is temporarily unavailable while user-game relationships are being implemented.");
     }
+
     @Override
-    public List<GameResponse> getAllGames(){
-        List<Game> allGames = gameRepository.findAll();
-        List<GameResponse> allResponseGames = new ArrayList<>();
-        for(int i = 0;i<allGames.size();i++){
-            GameResponse responseGame = new GameResponse();
-            Game saveGame = new Game();
-            saveGame = allGames.get(i);
-            BeanUtils.copyProperties(saveGame,responseGame);
-            allResponseGames.add(responseGame);
+    public List<GameResponse> getAllGames() {
+        List<GameResponse> responses = new ArrayList<>();
+        for (Game game : gameRepository.findAll()) {
+            GameResponse response = new GameResponse();
+            BeanUtils.copyProperties(game, response);
+            responses.add(response);
         }
-        return allResponseGames;
+        return responses;
     }
+
     @Override
-    public GameResponse getGameById(Long gameId){
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
-        GameResponse responseGame = new GameResponse();
-        BeanUtils.copyProperties(game,responseGame);
-        return responseGame;
+    public GameResponse getGameById(Long gameId) {
+        Game game = gameRepository.findById(gameId)
+                .orElseThrow(() -> new ResourceNotFoundException("Game not found with id: " + gameId));
+        GameResponse response = new GameResponse();
+        BeanUtils.copyProperties(game, response);
+        return response;
     }
 }

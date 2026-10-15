@@ -2,68 +2,52 @@ package com.mertezer.checkpoint.service.impl;
 
 import com.mertezer.checkpoint.dto.CreateLogNoteRequest;
 import com.mertezer.checkpoint.dto.LogEntryResponse;
-import com.mertezer.checkpoint.entity.Game;
 import com.mertezer.checkpoint.entity.LogEntry;
 import com.mertezer.checkpoint.exception.ResourceNotFoundException;
-import com.mertezer.checkpoint.repository.GameRepository;
 import com.mertezer.checkpoint.repository.LogEntryRepository;
 import com.mertezer.checkpoint.service.ILogEntryService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class LogEntryServiceImpl implements ILogEntryService {
-
-    private final GameRepository gameRepository;
     private final LogEntryRepository logEntryRepository;
 
-    public LogEntryServiceImpl(GameRepository gameRepository, LogEntryRepository logEntryRepository) {
-        this.gameRepository = gameRepository;
+    public LogEntryServiceImpl(LogEntryRepository logEntryRepository) {
         this.logEntryRepository = logEntryRepository;
     }
 
     @Override
-    public LogEntryResponse saveNote(CreateLogNoteRequest createLogNoteRequest, Long gameId) {
-        Game game = gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
-        LogEntry newLog = new LogEntry();
-        BeanUtils.copyProperties(createLogNoteRequest, newLog);
-        newLog.setGame(game);
-        newLog.setCreatedAt(LocalDateTime.now());
-        LogEntry savedLog = logEntryRepository.save(newLog);
-        LogEntryResponse response = new LogEntryResponse();
-        BeanUtils.copyProperties(savedLog, response);
-        return response;
+    public LogEntryResponse saveNote(CreateLogNoteRequest request, Long gameId) {
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,
+                "Note creation is temporarily unavailable while user-game relationships are being implemented.");
     }
 
     @Override
     public List<LogEntryResponse> getNotesByGameId(Long gameId) {
-        gameRepository.findById(gameId).orElseThrow(() -> new ResourceNotFoundException("Game not found with id: "+gameId));
-        List<LogEntry> notes = logEntryRepository.findAllByGame_Id(gameId);
-        List<LogEntryResponse> responses = new ArrayList<>();
-        for (LogEntry note : notes) {
-            LogEntryResponse response = new LogEntryResponse();
-            BeanUtils.copyProperties(note, response);
-            responses.add(response);
-        }
-        return responses;
+        throw new ResponseStatusException(HttpStatus.NOT_IMPLEMENTED,
+                "Note listing is temporarily unavailable while user-game relationships are being implemented.");
     }
 
     @Override
     public void deleteNote(Long logEntryId) {
-        LogEntry deleteLog = logEntryRepository.findById(logEntryId).orElseThrow(() -> new ResourceNotFoundException("Note not found with id: "+logEntryId));
+        LogEntry deleteLog = logEntryRepository.findById(logEntryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found with id: " + logEntryId));
         logEntryRepository.delete(deleteLog);
     }
+
     @Override
-   public LogEntryResponse updateNote(CreateLogNoteRequest createLogNoteRequest,Long logEntryId){
-        LogEntry oldNote = logEntryRepository.findById(logEntryId).orElseThrow(() -> new ResourceNotFoundException("Note not found with id: "+logEntryId));
-        BeanUtils.copyProperties(createLogNoteRequest,oldNote);
-        LogEntry updateNote =logEntryRepository.save(oldNote);
-        LogEntryResponse newResponseNote = new LogEntryResponse();
-        BeanUtils.copyProperties(updateNote,newResponseNote);
-        return newResponseNote;
+    public LogEntryResponse updateNote(CreateLogNoteRequest request, Long logEntryId) {
+        LogEntry oldNote = logEntryRepository.findById(logEntryId)
+                .orElseThrow(() -> new ResourceNotFoundException("Note not found with id: " + logEntryId));
+        BeanUtils.copyProperties(request, oldNote);
+        LogEntry updatedNote = logEntryRepository.save(oldNote);
+        LogEntryResponse response = new LogEntryResponse();
+        BeanUtils.copyProperties(updatedNote, response);
+        return response;
     }
 }

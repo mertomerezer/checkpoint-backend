@@ -3,6 +3,8 @@ package com.mertezer.checkpoint.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,5 +34,14 @@ public class SecurityConfig {
     //HttpMethod.GET -> “Bu kalıba uyan GET istekleri giriş yapmadan çağrılabilir. Örneğin aynı apiye POST isteği gelirse login olunması istenir
     //anyRequest().authenticated() -> Önceki kurallara uymayan tüm istekleri seçer ve bu istekler içink kullanıcının giriş yapmasını ister
     //Yani her .requestMatchers(...) belirli bir istek grubunu seçiyor; ardından .permitAll() veya .authenticated() o gruba uygulanacak erişim kararını söylüyor
-    
+
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
+        return authenticationConfiguration.getAuthenticationManager();
+
+        //AuthenticationManager, Spring Security’nin kimlik doğrulama isteğini yöneten arayüzüdür
+        //AuthenticationConfiguration, Spring’in kurduğu kimlik doğrulama yapılandırmasına erişim sağlar.
+        //getAuthenticationManager(), hazır yöneticiyi verir.
+    }
 }
